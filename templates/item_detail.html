@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Item Detail</title>
+</head>
+<body>
+    <h1>Item Detail: {{ item.name }}</h1>
+    <p>Description: {{ item.description }}</p>
+    <p>Price: {{ item.price }}</p>
+    <form action="{% url 'get_session_id' item.id %}" method="get">
+        <button type="submit">Buy</button>
+    </form>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+    var stripe = Stripe('{{ settings.STRIPE_PUBLIC_KEY }}');
+
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var form = e.target;
+
+        fetch(form.action, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            return stripe.redirectToCheckout({sessionId: data.session_id});
+        })
+        .then(function(result) {
+            if (result.error) {
+                console.error(result.error.message);
+            }
+        })
+        .catch(function(error) {
+            console.error(error);
+        });
+    });
+    </script>
+</body>
+</html>
