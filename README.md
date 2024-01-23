@@ -1,4 +1,4 @@
-                                                              Реализован Django + Stripe API бэкенд со следующим функционалом и условиями:
+Реализован Django + Stripe API бэкенд со следующим функционалом и условиями:
 
 - Django Модель Item с полями (name, description, price)
 
